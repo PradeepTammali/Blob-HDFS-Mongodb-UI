@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	crossorigin="anonymous"></script>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>Search</title>
+<meta name="description" content="Custom Login Form Styling with CSS3" />
+<meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<style>	
+			@import url(http://fonts.googleapis.com/css?family=Raleway:400,700);
+			body {		
+				background: url(images/bg2.jpg) no-repeat center center fixed;
+				-webkit-background-size: cover;
+				-moz-background-size: cover;
+				-o-background-size: cover;
+				background-size: cover;
+			}
+
+			
+			.container > header h1,
+			.container > header h2 {
+				color: #fff;
+				text-shadow: 0 1px 1px rgba(0,0,0,0.7);
+			}
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+		</style>
+
+<script>
+	$(document).ready(function() {
+
+		 
+		$("#search").on('click', function() {
+			$('#myTable').empty();
+			  $.ajax({
+				method : "GET",
+				url : "http://localhost:8080/MongoDBService/retrieveFromMongo?",
+				headers: {
+			        'Content-Type': 'application/x-www-form-urlencoded'
+			    },
+				data : {
+					workOrderId : $("#workOrderId").val()	
+				}				
+			}).done(function(data) {
+		        var json = $.parseJSON(data);
+				 
+			 console.log(data);
+
+
+for (var i = 0; i < json.length; i++){
+
+	var jsonfiles = $.parseJSON(json[i].files);
+	$.each(jsonfiles, function(fileId, fileName) {
+
+    var tr = document.createElement('tr');    
+    var text1 = document.createTextNode(json[i].id);
+    var text2 = document.createTextNode(json[i].description);
+    var a = document.createElement('a');
+    var str =  'http://localhost:8080/MongoDBService/retriveFileFromMongo?fileName='+fileName+'&&fileId='+fileId;
+	
+$('#myTable').append('<tr><th>'+json[i].id+'</th><th>'+json[i].description+'</th><th><a href="'+str+'">'+fileName+'</a></th></tr>');
+
+
+});
+}
+ 
+
+			})  
+		});
+
+	});
+
+</script>
+</head>
+<body><div class="topnav">
+  <a class="" href=""></a>
+  <a href="upload-mongo.html">Upload work orders</a>
+  <a href="search-mongo.html">Search work orders</a>
+  <a href="login.html">Logout</a>
+</div>
+       
+			<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+			<section class="main">
+				<div class="form-4">
+				    <center><h1>Search work orders</h1></center><br/><br/>
+				    <div class="ex">
+		<table style="with: 50%" >
+			<tr>
+				<td><h1>Workorderid</h1></td>
+				<td><input type="text" name="workOrderId" id="workOrderId" /></td>
+			</tr>
+		</table>
+		<input type="submit" value="search" id="search" />
+		<div id='list'> </div>
+	</div>    
+				</div>​
+			</section>
+
+
+			
+        </div>
+	<div class="form-4" >
+	<table cellspacing="10"  id="myTable" border="1" align="center"></table>
+	</div>
+
+    </body>
+</html>

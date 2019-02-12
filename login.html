@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Login Form </title>
+        <meta name="description" content="Custom Login Form Styling with CSS3" />
+        <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
+        <meta name="author" content="Codrops" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+		<style>	
+			@import url(http://fonts.googleapis.com/css?family=Raleway:400,700);
+			body {
+				background: #7f9b4e url('images/bg2.jpg') no-repeat center top;
+				-webkit-background-size: cover;
+				-moz-background-size: cover;
+				background-size: cover;
+			}
+			.container > header h1,
+			.container > header h2 {
+				color: #fff;
+				text-shadow: 0 1px 1px rgba(0,0,0,0.7);
+			}
+		</style>
+<script>
+	$(document).ready(function() {
+				console.log($("#username").val());
+				console.log($("#password").val());
+		$("#login").on('click', function() {
+			  $.ajax({
+				method : "GET",
+				url : "http://localhost:8080/Service/Login",
+				headers: {
+			        'Content-Type': 'application/x-www-form-urlencoded'
+			    },
+				data : {
+					"username" : ""+$('#username').val(),
+					"password" : ""+$('#password').val()
+				}				
+			}).done(function(msg) {
+				if(msg == "valid"){
+				
+				 $(location).attr('href','menu1.html');
+				 }
+				else
+				alert("invalid details");
+			})  
+		});
+
+	});
+</script>
+</head>
+<body><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+			<section class="main">
+				<div class="form-4">
+				 <center><h1>Login</h1></center><br/><br/>
+		<table style="with: 50%">
+			<tr>
+				<td><h1>Username</h1></td>
+				<td><input type="text" name="username" id="username" /></td>
+			</tr>
+			<tr>
+				<td><h1>Password</h1></td>
+				<td><input type="password" name="password" id="password" /></td>
+			</tr>
+		</table>
+		<input type="submit" value="Login" id="login" />
+	</div>
+</body>
+</html>

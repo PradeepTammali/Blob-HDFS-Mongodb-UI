@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	crossorigin="anonymous"></script>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+                      <title>Upload</title>
+                      <meta name="description" content="Custom Login Form Styling with CSS3" />
+                      <meta name="keywords" content="css3, login, form, custom, input, submit, button, html5, placeholder" />
+                      <meta name="author" content="Codrops" />
+                      <link rel="stylesheet" type="text/css" href="css/style.css" />
+               <style>	
+			@import url(http://fonts.googleapis.com/css?family=Raleway:400,700);
+			body {
+				background: #7f9b4e url('images/bg2.jpg') no-repeat center top;
+				-webkit-background-size: cover;
+				-moz-background-size: cover;
+				background-size: cover;
+			}
+			.container > header h1,
+			.container > header h2 {
+				color: #fff;
+				text-shadow: 0 1px 1px rgba(0,0,0,0.7);
+			}
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+		</style>
+</head>
+
+<body><div class="topnav">
+  <a class="" href=""></a>
+  <a href="upload.html">Upload work orders</a>
+  <a href="search.html">Search work orders</a>
+  <a href="login.html">Logout</a>
+</div>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<div class="form-4">
+<center><h1>Uploadworkorders</h1></center><br/><br/>
+		<table style="with: 50%">
+			<tr>
+				<td><h1>Workorderid</h1></td>
+				<td><input type="text" name="workOrderId" id="workOrderId" /></td>
+			</tr>
+			<tr>
+				<td><h1>Description</h1></td>
+				<td><input type="text" name="description" id="description" /></td>
+			</tr>
+		</table>
+	
+    <div class="submit" >
+	<iframe id="invisible" name="invisible" style="display:none;"></iframe>
+	<form action="http://localhost:8080/Service/uploadfile" method="post" enctype="multipart/form-data" target="invisible">
+	<input type='file' id="image" name="file" multiple=""/>
+	<input type="submit" value="UpLoad" id="btnUpload"  onclick="upload()"/>
+	</form>
+	<div class="form-4">
+       <div id="myImg"  > </div>
+	</div>
+</div>
+</div>
+</body>
+<script >
+var temp = '';
+
+$(function () {
+    $(":file").change(function () {
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+          reader.onload = imageIsLoaded;
+			 reader.onclick = upload;
+            reader.readAsDataURL(this.files[0]);
+	    console.log(reader);
+	    //sendData(reader.result);
+        }
+    });
+});
+function imageIsLoaded(e) {
+	temp = e;
+    $('#myImg').attr('src', e.target.result);
+}; 
+function upload() {
+	var e = temp; 
+	var files = $('#image').prop("files")
+	var names = $.map(files, function(val) { return val.name; });
+    console.log(names);
+	uploadVariables(names)
+};
+
+function uploadVariables(path) {
+                console.log("cosoledvalue"+path);
+				var formData = new FormData();
+				var workId = $("#workOrderId").val()
+				var desc = $("#description").val()
+				formData.append('workOrderId', workId);
+				formData.append('description', desc);
+				var x = document.getElementById("image");
+				var files = x.files;
+				for (i = 0; i < files.length; i++) {
+				//var name = files[i].name;
+				formData.append('fileName', files[i].name);
+				}
+			  $.ajax({
+				type : "POST",
+				cache: false,
+				contentType: false,
+				processData: false,
+				url : "http://localhost:8080/Service/loadIntoSql?",
+				data : formData			
+			}).done(function(msg) {
+				alert("Data Saved");
+			})  
+	}
+	function dataURItoBlob(dataURI) {
+      var binary = atob(dataURI.split(',')[1]);
+      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+      var array = [];
+      for (var i = 0; i < binary.length; i++) {
+        array.push(binary.charCodeAt(i));
+      }
+      return new Blob([new Uint8Array(array)], {
+        type: mimeString
+      });
+    }
+</script>
+

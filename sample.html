@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+    <meta charset="utf-8" />
+    <title>AngularJS file upload</title>
+
+    <script data-server="1.4.3" src="https://code.angularjs.org/1.4.3/angular.js" data-require="angular.js@1.4.x"></script>
+</head>
+
+<body ng-controller="MainCtrl">
+    <p>Hello {{name}}!</p>
+    <input type="file" ng-file-model="files" multiple />
+    <button type="button" ng-click="upload()" id="upload">Upload</button>
+
+    <p ng-repeat="file in files">
+        {{file.name}}
+
+    </p>
+    <script>
+
+
+        var app = angular.module('myApp', []);
+
+        app.controller('MainCtrl', function ($scope) {
+            $scope.name = 'World';
+            $scope.files = [];
+            $scope.upload = function () {
+
+                $.ajax({
+                    url: "http://localhost:8080/Service/uploadfile",
+                    type: "POST",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: $scope.files
+                });
+            }
+
+        });
+
+
+        app.directive('ngFileModel', ['$parse', function ($parse) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attrs) {
+                    var model = $parse(attrs.ngFileModel);
+                    var isMultiple = attrs.multiple;
+                    var modelSetter = model.assign;
+                    element.bind('change', function () {
+                        var values = [];
+                        angular.forEach(element[0].files, function (item) {
+                            var value = {
+                                // File Name 
+                                name: item.name,
+                                //File Size 
+                                size: item.size,
+                                //File URL to view 
+                                url: URL.createObjectURL(item),
+                                // File Input Value 
+                                _file: item,
+
+                            };
+                            values.push(value);
+                        });
+                        scope.$apply(function () {
+                            if (isMultiple) {
+
+                                modelSetter(scope, values);
+                            } else {
+                                modelSetter(scope, values[0]);
+                            }
+                        });
+                    });
+                }
+            };
+        }]);
+
+
+    </script>
+
+
+</body>
+
+</html>
